@@ -25,71 +25,65 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     case Msg.NoOp => (model, Cmd.None)
 
   def renderDrink(drink: Drink): Html[Msg] =
-    tr(
-      td(drink.name + " "),
-      td(
-        div(role := "group", `class` := "btn-group btn-group-block")(
-          drink.commonSizes.map(size =>
-            button(
-              `class` := "btn",
-              onClick(
-                Msg.AddCheckIn(
-                  CheckIn(drink, ZonedDateTime.now(ZoneId.of("UTC")), size)
-                )
+    Material.listItem()(
+      span()(drink.name),
+      div(attribute("slot", "end-icon"))(
+        drink.commonSizes.map((size, volume) =>
+          Material.button(
+            attribute("variant", "tonal"),
+            onClick(
+              Msg.AddCheckIn(
+                CheckIn(drink, ZonedDateTime.now(ZoneId.of("UTC")), volume)
               )
-            )(s"${size}mL")
-          )*
-        )
+            )
+          )(size)
+        )*
       )
     )
 
   def renderDrinks: Html[Msg] =
-    table(`class` := "table")(
-      (tr(
-        th("Drink Name"),
-        th("Sizes")
-      ) :: Drink.defaults.map(renderDrink))*
-    )
+    Material.list()(Drink.defaults.map(renderDrink)*)
 
   def renderCheckIn(checkIn: CheckIn): Html[Msg] =
-    tr(
-      td(checkIn.dateTime.toString),
-      td(checkIn.drink.name),
-      td(s"${checkIn.quantity}mL"),
-      td(s"${checkIn.totalCaffeine.toString}g"),
-      td(button(`class` := "btn", onClick(Msg.RemoveCheckIn(checkIn)))("Remove"))
+    Material.listItem(attribute("description", checkIn.dateTime.toLocalTime().toString))(
+      span()(
+        s"${checkIn.drink.name} (${checkIn.quantity}mL / ${checkIn.totalCaffeine.toString}g)"
+      ),
+      Material.buttonIcon(
+        attribute("variant", "tonal"),
+        attribute("slot", "end-icon"),
+        attribute("icon", "delete"),
+        onClick(Msg.RemoveCheckIn(checkIn))
+      )()
     )
 
   def renderHistory(history: History): Html[Msg] =
-    table(`class` := "table")(
-      (tr(
-        th("Date"),
-        th("Name"),
-        th("Quantity"),
-        th("Total Caffeine"),
-        th("Remove")
-      ) :: history.checkIns.map(renderCheckIn))*
+    span()(
+      history.checkIns
+        .groupBy(_.dateTime.toLocalDate())
+        .toList
+        .sortBy(_._1)
+        .flatMap((localDate, checkIns) =>
+          List(
+            h3(localDate.toString),
+            Material.list()(checkIns.map(renderCheckIn)*)
+          )
+        )
     )
 
   def renderStats(history: History, settings: Settings): Html[Msg] =
     val plot = CaffeinePlot.getImage(history, settings, 1024, 512)
-    div(`class` := "card")(
-      div(`class` := "card-header")(div(`class` := "card-title h5")("Stats")),
-      div(`class` := "card-image")(img(`class` := "img-responsive", src := plot.src))
-    )
+    img(src := plot.src)
 
   def view(model: Model): Html[Msg] =
-    div(`class` := "container")(
-      div(`class` := "columns")(
-        div(`class` := "column col-12")(
-          h2("Stats:"),
-          renderStats(model.history, model.settings),
-          h2("Add Drink:"),
-          renderDrinks,
-          h2("History:"),
-          renderHistory(model.history)
-        )
-      )
+    div()(
+      h1()("Coffee Tracker"),
+      h2("Stats:"),
+      renderStats(model.history, model.settings),
+      h2("Add Drink:"),
+      renderDrinks,
+      h2("History:"),
+      renderHistory(model.history)
     )
 
   def subscriptions(model: Model): Sub[IO, Msg] =
