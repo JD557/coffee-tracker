@@ -7,6 +7,7 @@ import tyrian.*
 import scala.scalajs.js.annotation.*
 import java.time.ZonedDateTime
 import java.time.ZoneId
+import java.time.Instant
 
 @JSExportTopLevel("TyrianApp")
 object CoffeeTracker extends TyrianIOApp[Msg, Model]:
@@ -61,7 +62,7 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
       attribute("description", checkIn.dateTime.toLocalTime().toString)
     )(
       span()(
-        s"${checkIn.drink.name} (${checkIn.quantity}mL / ${checkIn.totalCaffeine.toString}g)"
+        s"${checkIn.drink.name} (${checkIn.quantity}mL / ${checkIn.totalCaffeine.toString}mg)"
       ),
       Material.buttonIcon(
         attribute("variant", "tonal"),
@@ -73,29 +74,36 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
 
   def renderHistory(history: History): Html[Msg] =
     div(style(Style("padding-bottom" -> "4em")))(
+      h2("History") ::
       history.checkIns
         .groupBy(_.dateTime.toLocalDate())
         .toList
         .sortBy(_._1)
-        .flatMap((localDate, checkIns) =>
-          List(
-            h3(localDate.toString),
-            Material.list()(checkIns.map(renderCheckIn)*)
+        .map((localDate, checkIns) =>
+          Material.card()(
+            div(style(Style("padding" -> "1rem")))(
+              h3(localDate.toString),
+              Material.list()(checkIns.map(renderCheckIn))
+            )
           )
         )
     )
 
   def renderStats(history: History, settings: Settings): Html[Msg] =
     val plot = CaffeinePlot.getImage(history, settings, 1024, 512)
-    img(src := plot.src)
+    Material.card()(
+      img(src := plot.src, style(Style("max-width"-> "100%"))),
+      div(style(Style("padding" -> "1rem")))(
+        h2("Overview"),
+        span(f"Current caffeine: ${history.caffeineAt(Instant.now(), settings)}%1.1f mg")
+      )
+    )
 
   def view(model: Model): Html[Msg] =
     Material.layout()(
       Material.topAppBar()(h1()("Coffee Tracker")),
       Material.layoutMain()(
-        h2("Stats:"),
         renderStats(model.history, model.settings),
-        h2("History:"),
         renderHistory(model.history),
         Material.dialog(
           attribute("open", model.checkInModal.toString),

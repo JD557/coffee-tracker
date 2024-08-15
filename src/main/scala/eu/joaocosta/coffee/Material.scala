@@ -17,9 +17,10 @@ object Material:
   val list = TagBuilder("mdui-list")
   val listItem = TagBuilder("mdui-list-item")
 
+  val card = TagBuilder("mdui-card")
+
   val layout = TagBuilder("mdui-layout")
   val topAppBar = TagBuilder("mdui-top-app-bar")
   val layoutMain = TagBuilder("mdui-layout-main")
-
 
   val dialog = TagBuilder("mdui-dialog")

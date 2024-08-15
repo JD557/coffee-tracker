@@ -4,7 +4,7 @@ package eu.joaocosta.coffee
   * Drink description
   *
   * @param name drink name
-  * @param caffeinePerMl grams of caffeine per mL
+  * @param caffeinePerMl milligrams of caffeine per mL
   * @param commonSizes common sizes (in ml)
   */
 final case class Drink(name: String, caffeinePerMl: Double, commonSizes: List[(String, Double)])
