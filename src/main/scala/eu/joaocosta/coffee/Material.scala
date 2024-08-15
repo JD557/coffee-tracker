@@ -9,6 +9,11 @@ object Material:
   val buttonIcon = TagBuilder("mdui-button-icon")
   val fab = TagBuilder("mdui-fab")
 
+  val dropdown = TagBuilder("mdui-dropdown")
+  val menu = TagBuilder("mdui-menu")
+  def menuItem[M](attributes: Attr[M]*)(text: String) =
+    raw[M]("mdui-menu-item", attributes.toList)(text)
+
   val list = TagBuilder("mdui-list")
   val listItem = TagBuilder("mdui-list-item")
 

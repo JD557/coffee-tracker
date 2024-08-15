@@ -35,12 +35,14 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     case Msg.NoOp => (model, Cmd.None)
 
   def renderDrink(drink: Drink): Html[Msg] =
-    Material.listItem()(
-      span()(drink.name),
-      div(attribute("slot", "end-icon"))(
+    Material.dropdown()(
+      Material.listItem(
+        attribute("slot", "trigger"),
+        attribute("icon", "add"),
+      )(span()(drink.name)),
+      Material.menu()(
         drink.commonSizes.map((size, volume) =>
-          Material.button(
-            attribute("variant", "tonal"),
+          Material.menuItem(
             onClick(
               Msg.AddCheckIn(
                 CheckIn(drink, ZonedDateTime.now(ZoneId.of("UTC")), volume)
