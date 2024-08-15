@@ -78,7 +78,7 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
 
   def renderHistory(history: History): Html[Msg] =
     div(style(Style("padding-bottom" -> "4em")))(
-      h2("History") ::
+      h2(style(Material.Styles.titleLarge))("History") ::
         history.checkIns
           .groupBy(_.dateTime.toLocalDate())
           .toList
@@ -98,7 +98,7 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     Material.card()(
       img(src := plot.src, style(Style("max-width" -> "100%"))),
       div(style(Style("padding" -> "1rem")))(
-        h2("Overview"),
+        h2(style(Material.Styles.titleLarge))("Overview"),
         span(
           f"Current caffeine: ${history.caffeineAt(Instant.now(), settings)}%1.1f mg"
         )
@@ -120,17 +120,27 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
         renderHistory(model.history),
         Material.dialog(
           attribute("open", model.checkInModal.toString),
+          attribute("headline", "Add Drink"),
           onEvent("overlay-click", _ => Msg.CloseCheckInModal)
         )(
-          h2("Add Drink:"),
           renderDrinks
         ),
         Material.dialog(
           attribute("open", model.settingsModal.toString),
+          attribute("headline", "Settings"),
           onEvent("overlay-click", _ => Msg.CloseSettingsModal)
         )(
-          h2("Settings"),
-          span()(model.settings.toString)
+          span()(model.settings.toString),
+          Material.button(
+            attribute("slot", "action"),
+            attribute("variant", "text"),
+            onClick(Msg.CloseSettingsModal)
+          )("Cancel"),
+          Material.button(
+            attribute("slot", "action"),
+            attribute("variant", "tonal"),
+            onClick(Msg.CloseSettingsModal)
+          )("Save")
         )
       ),
       Material.fab(
