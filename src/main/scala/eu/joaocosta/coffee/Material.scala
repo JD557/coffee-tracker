@@ -6,12 +6,15 @@ import tyrian.*
 object Material:
   def button[M](attributes: Attr[M]*)(text: String) =
     raw[M]("mdui-button", attributes.toList)(text)
+  val buttonIcon = TagBuilder("mdui-button-icon")
+  val fab = TagBuilder("mdui-fab")
 
-  def buttonIcon[M](attributes: Attr[M]*)(children: Elem[M]*) =
-    tag[M]("mdui-button-icon")(attributes.toList)(children.toList)
+  val list = TagBuilder("mdui-list")
+  val listItem = TagBuilder("mdui-list-item")
 
-  def list[M](attributes: Attr[M]*)(children: Elem[M]*) =
-    tag[M]("mdui-list")(attributes.toList)(children.toList)
+  val layout = TagBuilder("mdui-layout")
+  val topAppBar = TagBuilder("mdui-top-app-bar")
+  val layoutMain = TagBuilder("mdui-layout-main")
 
-  def listItem[M](attributes: Attr[M]*)(children: Elem[M]*) =
-    tag[M]("mdui-list-item")(attributes.toList)(children.toList)
+
+  val dialog = TagBuilder("mdui-dialog")

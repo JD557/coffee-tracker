@@ -19,9 +19,19 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
 
   def update(model: Model): Msg => (Model, Cmd[IO, Msg]) =
     case Msg.AddCheckIn(checkIn) =>
-      (model.copy(history = model.history.addCheckIn(checkIn)), Cmd.None)
+      (
+        model.copy(
+          history = model.history.addCheckIn(checkIn),
+          checkInModal = false
+        ),
+        Cmd.None
+      )
     case Msg.RemoveCheckIn(checkIn) =>
       (model.copy(history = model.history.removeCheckIn(checkIn)), Cmd.None)
+    case Msg.OpenCheckInModal =>
+      (model.copy(checkInModal = true), Cmd.None)
+    case Msg.CloseCheckInModal =>
+      (model.copy(checkInModal = false), Cmd.None)
     case Msg.NoOp => (model, Cmd.None)
 
   def renderDrink(drink: Drink): Html[Msg] =
@@ -45,7 +55,9 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     Material.list()(Drink.defaults.map(renderDrink)*)
 
   def renderCheckIn(checkIn: CheckIn): Html[Msg] =
-    Material.listItem(attribute("description", checkIn.dateTime.toLocalTime().toString))(
+    Material.listItem(
+      attribute("description", checkIn.dateTime.toLocalTime().toString)
+    )(
       span()(
         s"${checkIn.drink.name} (${checkIn.quantity}mL / ${checkIn.totalCaffeine.toString}g)"
       ),
@@ -58,7 +70,7 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     )
 
   def renderHistory(history: History): Html[Msg] =
-    span()(
+    div(style(Style("padding-bottom" -> "4em")))(
       history.checkIns
         .groupBy(_.dateTime.toLocalDate())
         .toList
@@ -76,14 +88,32 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     img(src := plot.src)
 
   def view(model: Model): Html[Msg] =
-    div()(
-      h1()("Coffee Tracker"),
-      h2("Stats:"),
-      renderStats(model.history, model.settings),
-      h2("Add Drink:"),
-      renderDrinks,
-      h2("History:"),
-      renderHistory(model.history)
+    Material.layout()(
+      Material.topAppBar()(h1()("Coffee Tracker")),
+      Material.layoutMain()(
+        h2("Stats:"),
+        renderStats(model.history, model.settings),
+        h2("History:"),
+        renderHistory(model.history),
+        Material.dialog(
+          attribute("open", model.checkInModal.toString),
+          onEvent("overlay-click", _ => Msg.CloseCheckInModal)
+        )(
+          h2("Add Drink:"),
+          renderDrinks
+        )
+      ),
+      Material.fab(
+        attribute("icon", "add"),
+        onClick(Msg.OpenCheckInModal),
+        style(
+          Style(
+            "position" -> "fixed",
+            "bottom"   -> "1em",
+            "right"    -> "1em"
+          )
+        )
+      )()
     )
 
   def subscriptions(model: Model): Sub[IO, Msg] =
@@ -91,10 +121,13 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
 
 final case class Model(
     history: History = History(),
-    settings: Settings = Settings()
+    settings: Settings = Settings(),
+    checkInModal: Boolean = false
 )
 
 enum Msg:
   case AddCheckIn(checkIn: CheckIn)
   case RemoveCheckIn(checkIn: CheckIn)
+  case OpenCheckInModal
+  case CloseCheckInModal
   case NoOp
