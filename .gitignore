@@ -35,3 +35,6 @@ null/
 # JS
 .parcel-cache/
 node_modules/
+
+# Android build
+android/
