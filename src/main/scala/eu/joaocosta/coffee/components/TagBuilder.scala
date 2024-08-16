@@ -1,4 +1,4 @@
-package eu.joaocosta.coffee
+package eu.joaocosta.coffee.components
 
 import scala.annotation.targetName
 import tyrian.*

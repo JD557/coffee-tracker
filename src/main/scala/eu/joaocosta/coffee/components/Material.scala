@@ -1,4 +1,4 @@
-package eu.joaocosta.coffee
+package eu.joaocosta.coffee.components
 
 import tyrian.Html.*
 import tyrian.*

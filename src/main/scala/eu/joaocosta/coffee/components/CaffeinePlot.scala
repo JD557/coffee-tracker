@@ -1,8 +1,9 @@
-package eu.joaocosta.coffee
+package eu.joaocosta.coffee.components
 
+import eu.joaocosta.coffee.model.*
+import eu.joaocosta.minart.backend.ImageDataSurface
 import eu.joaocosta.minart.graphics.*
 import java.time.Instant
-import eu.joaocosta.minart.backend.ImageDataSurface
 import org.scalajs.dom
 
 object CaffeinePlot:
@@ -11,6 +12,7 @@ object CaffeinePlot:
   private val nowColor = Color(255, 255, 255)
   private val minColor = Color(128, 128, 128)
   private val maxColor = Color(255, 128, 128)
+  private val thickness = 1
 
   def getImage(history: History, settings: Settings, imageWidth: Int, imageHeight: Int): dom.Image =
     val baseSurface = ImageDataSurface.fromImage(new dom.Image(imageWidth, imageHeight))
@@ -24,7 +26,8 @@ object CaffeinePlot:
       val delta = ((24 * 60 * 60) * pixelX) / imageWidth
       val caffeine = history.caffeineAt(Instant.ofEpochSecond(start + delta), settings)
       val pixelY = (imageHeight - 1) - (imageHeight * caffeine / maxRange).toInt
-      baseSurface.putPixel(pixelX, pixelY, plotColor)
+      (-thickness to thickness).foreach(dy => baseSurface.putPixel(pixelX, pixelY + dy, plotColor))
+      (-thickness to thickness).foreach(dx => baseSurface.putPixel(pixelX + dx, pixelY, plotColor))
     }
 
     // Draw lines

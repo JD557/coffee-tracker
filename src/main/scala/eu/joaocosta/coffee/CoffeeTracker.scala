@@ -5,9 +5,9 @@ import tyrian.Html.*
 import tyrian.*
 
 import scala.scalajs.js.annotation.*
-import java.time.ZonedDateTime
-import java.time.ZoneId
-import java.time.Instant
+
+import eu.joaocosta.coffee.model.*
+import eu.joaocosta.coffee.components.*
 
 @JSExportTopLevel("TyrianApp")
 object CoffeeTracker extends TyrianIOApp[Msg, Model]:
@@ -39,71 +39,6 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
       (model.copy(settingsModal = false), Cmd.None)
     case Msg.NoOp => (model, Cmd.None)
 
-  def renderDrink(drink: Drink): Html[Msg] =
-    Material.dropdown()(
-      Material.listItem(
-        attribute("slot", "trigger"),
-        attribute("icon", "add")
-      )(span()(drink.name)),
-      Material.menu()(
-        drink.commonSizes.map((size, volume) =>
-          Material.menuItem(
-            onClick(
-              Msg.AddCheckIn(
-                CheckIn(drink, ZonedDateTime.now(ZoneId.of("UTC")), volume)
-              )
-            )
-          )(size)
-        )*
-      )
-    )
-
-  def renderDrinks: Html[Msg] =
-    Material.list()(Drink.defaults.map(renderDrink)*)
-
-  def renderCheckIn(checkIn: CheckIn): Html[Msg] =
-    Material.listItem(
-      attribute("description", checkIn.dateTime.toLocalTime().toString)
-    )(
-      span()(
-        s"${checkIn.drink.name} (${checkIn.quantity}mL / ${checkIn.totalCaffeine.toString}mg)"
-      ),
-      Material.buttonIcon(
-        attribute("variant", "tonal"),
-        attribute("slot", "end-icon"),
-        attribute("icon", "delete"),
-        onClick(Msg.RemoveCheckIn(checkIn))
-      )()
-    )
-
-  def renderHistory(history: History): Html[Msg] =
-    div(style(Style("padding-bottom" -> "4em")))(
-      h2(style(Material.Styles.titleLarge))("History") ::
-        history.checkIns
-          .groupBy(_.dateTime.toLocalDate())
-          .toList
-          .sortBy(_._1)
-          .map((localDate, checkIns) =>
-            Material.card()(
-              div(style(Style("padding" -> "1rem")))(
-                h3(localDate.toString),
-                Material.list()(checkIns.map(renderCheckIn))
-              )
-            )
-          )
-    )
-
-  def renderStats(history: History, settings: Settings): Html[Msg] =
-    val plot = CaffeinePlot.getImage(history, settings, 1024, 512)
-    Material.card()(
-      img(src := plot.src, style(Style("max-width" -> "100%"))),
-      div(style(Style("padding" -> "1rem")))(
-        h2(style(Material.Styles.titleLarge))("Overview"),
-        span(
-          f"Current caffeine: ${history.caffeineAt(Instant.now(), settings)}%1.1f mg"
-        )
-      )
-    )
 
   def view(model: Model): Html[Msg] =
     Material.layout()(
@@ -116,32 +51,10 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
         )()
       ),
       Material.layoutMain()(
-        renderStats(model.history, model.settings),
-        renderHistory(model.history),
-        Material.dialog(
-          attribute("open", model.checkInModal.toString),
-          attribute("headline", "Add Drink"),
-          onEvent("overlay-click", _ => Msg.CloseCheckInModal)
-        )(
-          renderDrinks
-        ),
-        Material.dialog(
-          attribute("open", model.settingsModal.toString),
-          attribute("headline", "Settings"),
-          onEvent("overlay-click", _ => Msg.CloseSettingsModal)
-        )(
-          span()(model.settings.toString),
-          Material.button(
-            attribute("slot", "action"),
-            attribute("variant", "text"),
-            onClick(Msg.CloseSettingsModal)
-          )("Cancel"),
-          Material.button(
-            attribute("slot", "action"),
-            attribute("variant", "tonal"),
-            onClick(Msg.CloseSettingsModal)
-          )("Save")
-        )
+        StatsCard.render(model.history, model.settings),
+        CheckInHistory.render(model.history),
+        CheckInModal.render(model.checkInModal),
+        SettingsModal.render(model.settingsModal, model.settings)
       ),
       Material.fab(
         attribute("icon", "add"),
@@ -159,18 +72,3 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
   def subscriptions(model: Model): Sub[IO, Msg] =
     Sub.None
 
-final case class Model(
-    history: History = History(),
-    settings: Settings = Settings(),
-    checkInModal: Boolean = false,
-    settingsModal: Boolean = false
-)
-
-enum Msg:
-  case AddCheckIn(checkIn: CheckIn)
-  case RemoveCheckIn(checkIn: CheckIn)
-  case OpenCheckInModal
-  case CloseCheckInModal
-  case OpenSettingsModal
-  case CloseSettingsModal
-  case NoOp

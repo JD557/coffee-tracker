@@ -1,4 +1,4 @@
-package eu.joaocosta.coffee
+package eu.joaocosta.coffee.model
 
 /**
   * Drink description
