@@ -7,4 +7,6 @@ enum Msg:
   case CloseCheckInModal
   case OpenSettingsModal
   case CloseSettingsModal
+  case SaveSettings
+  case UpdateSettingsScratch(settings: Settings)
   case NoOp

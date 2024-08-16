@@ -34,10 +34,15 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     case Msg.CloseCheckInModal =>
       (model.copy(checkInModal = false), Cmd.None)
     case Msg.OpenSettingsModal =>
-      (model.copy(settingsModal = true, checkInModal = false), Cmd.None)
+      (model.copy(settingsScratch = model.settings, settingsModal = true, checkInModal = false), Cmd.None)
     case Msg.CloseSettingsModal =>
-      (model.copy(settingsModal = false), Cmd.None)
-    case Msg.NoOp => (model, Cmd.None)
+      (model.copy(settingsScratch = model.settings, settingsModal = false), Cmd.None)
+    case Msg.SaveSettings =>
+      (model.copy(settings = model.settingsScratch, settingsModal = false), Cmd.None)
+    case Msg.UpdateSettingsScratch(settings) =>
+      (model.copy(settingsScratch = settings), Cmd.None)
+    case Msg.NoOp =>
+      (model, Cmd.None)
 
 
   def view(model: Model): Html[Msg] =
@@ -54,7 +59,7 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
         StatsCard.render(model.history, model.settings),
         CheckInHistory.render(model.history),
         CheckInModal.render(model.checkInModal),
-        SettingsModal.render(model.settingsModal, model.settings)
+        SettingsModal.render(model.settingsModal, model.settingsScratch)
       ),
       Material.fab(
         attribute("icon", "add"),

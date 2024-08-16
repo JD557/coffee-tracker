@@ -27,8 +27,9 @@ object Material:
 
   val dialog = TagBuilder("mdui-dialog")
 
-  object Styles:
+  val textField = TagBuilder("mdui-text-field")
 
+  object Styles:
     val titleLarge: Style = Style(
       "line-height" -> "var(--mdui-typescale-title-large-line-height)",
       "font-size" -> "var(--mdui-typescale-title-large-size)",
