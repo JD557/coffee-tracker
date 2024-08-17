@@ -10,19 +10,33 @@ object CheckInHistory:
   private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
   private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-  def renderCheckIn(checkIn: CheckIn): Html[Msg] =
-    Material.listItem(
-      attribute("description", timeFormatter.format(checkIn.dateTime))
-    )(
-      span()(
-        f"${checkIn.drink.name} (${checkIn.quantity}%1.1f mL / ${checkIn.totalCaffeine}%1.1f mg)"
+  def renderCheckIn(checkIn: CheckIn, history: History): Html[Msg] =
+    Material.collapseItem()(
+      Material.listItem(
+        attribute("slot", "header"),
+        attribute("end-icon", "edit"),
+        attribute("description", timeFormatter.format(checkIn.dateTime))
+      )(
+        span()(
+          f"${checkIn.drink.name} (${checkIn.quantity}%1.1f mL / ${checkIn.totalCaffeine}%1.1f mg)"
+        )
       ),
-      Material.buttonIcon(
-        attribute("variant", "tonal"),
-        attribute("slot", "end-icon"),
-        attribute("icon", "delete"),
-        onClick(Msg.RemoveCheckIn(checkIn))
-      )()
+      Material.listItem(attribute("nonclickable", "true"))(
+        Material.button(
+          attribute("variant", "text"),
+          onClick(
+            Msg.ModifyCheckInModal(
+              CheckInModal.Msg.Open(
+                history.removeCheckIn(checkIn)
+              )
+            )
+          )
+        )("Edit"),
+        Material.button(
+          attribute("variant", "text"),
+          onClick(Msg.RemoveCheckIn(checkIn))
+        )("Remove")
+      )
     )
 
   def render(history: History): Html[Msg] =
@@ -36,7 +50,11 @@ object CheckInHistory:
             Material.card()(
               div(style(Style("padding" -> "1rem")))(
                 h3(dateFormatter.format(localDate)),
-                Material.list()(checkIns.map(renderCheckIn))
+                Material.list()(
+                  Material.collapse(attribute("accordion", "true"))(
+                    checkIns.map(checkIn => renderCheckIn(checkIn, history))
+                  )
+                )
               )
             )
           )
