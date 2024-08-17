@@ -34,7 +34,11 @@ object CheckInHistory:
         )("Edit"),
         Material.button(
           attribute("variant", "text"),
-          onClick(Msg.RemoveCheckIn(checkIn))
+          onClick(
+            Msg.ModifyCheckInModal(
+              CheckInModal.Msg.UpdateAndSave(_.removeCheckIn(checkIn))
+            )
+          )
         )("Remove")
       )
     )

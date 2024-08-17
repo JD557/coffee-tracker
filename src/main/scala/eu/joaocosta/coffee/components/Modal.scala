@@ -14,9 +14,11 @@ trait Modal[T](using Codec[T]):
     def closeModal               = copy(open = false)
     def update(f: T => T): Model = copy(scratch = f(scratch))
     def drop: Model              = copy(scratch = data)
-    def commit: Model =
-      dom.window.localStorage.setItem(localStorageKey, scratch.asJson.noSpaces)
-      copy(data = scratch)
+    def commit: Model            = copy(data = scratch)
+    def save(): this.type        =
+      dom.window.localStorage
+        .setItem(localStorageKey, data.asJson.noSpaces)
+      this
 
   def init: Model =
     val initialData = Option(dom.window.localStorage.getItem(localStorageKey))
@@ -31,9 +33,9 @@ trait Modal[T](using Codec[T]):
       case Msg.Close =>
         model.drop.closeModal
       case Msg.Save =>
-        model.commit.closeModal
+        model.commit.closeModal.save()
       case Msg.UpdateAndSave(f) =>
-        model.update(f).commit.closeModal
+        model.update(f).commit.closeModal.save()
       case Msg.UpdateScratch(f) =>
         model.update(f)
       case Msg.NoOp =>

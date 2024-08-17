@@ -19,13 +19,6 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     (Model(), Cmd.None)
 
   def update(model: Model): Msg => (Model, Cmd[IO, Msg]) =
-    case Msg.RemoveCheckIn(checkIn) =>
-      (
-        model.copy(checkIns =
-          model.checkIns.drop.update(_.removeCheckIn(checkIn)).commit
-        ),
-        Cmd.None
-      )
     case Msg.ModifyCheckInModal(msg) =>
       (
         model.copy(
