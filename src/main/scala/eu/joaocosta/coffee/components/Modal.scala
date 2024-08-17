@@ -1,16 +1,28 @@
 package eu.joaocosta.coffee.components
 
+import org.scalajs.dom
+import io.circe.*
+import io.circe.syntax.*
 import tyrian.*
 
-trait Modal[T]:
+trait Modal[T](using Codec[T]):
+  def localStorageKey: String
+  def defaultValue: T
+
   case class Model(open: Boolean, data: T, scratch: T):
-    def openModal = copy(open = true)
-    def closeModal = copy(open = false)
+    def openModal                = copy(open = true)
+    def closeModal               = copy(open = false)
     def update(f: T => T): Model = copy(scratch = f(scratch))
     def drop: Model              = copy(scratch = data)
-    def commit: Model            = copy(data = scratch)
+    def commit: Model =
+      dom.window.localStorage.setItem(localStorageKey, scratch.asJson.noSpaces)
+      copy(data = scratch)
 
-  def init: Model
+  def init: Model =
+    val initialData = Option(dom.window.localStorage.getItem(localStorageKey))
+      .flatMap(str => parser.parse(str).flatMap(_.as[T]).toOption)
+      .getOrElse(defaultValue)
+    Model(false, initialData, initialData)
 
   def update(msg: Msg, model: Model): Model =
     msg match

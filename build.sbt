@@ -17,11 +17,14 @@ lazy val coffeetracker =
       scalaVersion := "3.4.1",
       organization := "eu.joaocosta",
       libraryDependencies ++= Seq(
-        "eu.joaocosta"       %%% "minart"                 % "0.6.1-SNAPSHOT",
-        "io.github.cquiroz"  %%% "scala-java-locales"     % "1.5.4",
-        "io.github.cquiroz"  %%% "scala-java-time"        % "2.6.0",
-        "io.indigoengine"    %%% "tyrian-io"              % "0.11.0",
-        "org.scalameta"      %%% "munit"                  % "0.7.29" % Test
+        "eu.joaocosta"      %%% "minart"             % "0.6.1-SNAPSHOT",
+        "io.github.cquiroz" %%% "scala-java-locales" % "1.5.4",
+        "io.github.cquiroz" %%% "scala-java-time"    % "2.6.0",
+        "io.indigoengine"   %%% "tyrian-io"          % "0.11.0",
+        "io.circe"          %%% "circe-core"         % "0.14.9",
+        "io.circe"          %%% "circe-generic"      % "0.14.9",
+        "io.circe"          %%% "circe-parser"       % "0.14.9",
+        "org.scalameta"     %%% "munit"              % "0.7.29" % Test
       ),
       testFrameworks += new TestFramework("munit.Framework"),
       scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
@@ -29,7 +32,7 @@ lazy val coffeetracker =
       semanticdbEnabled := true,
       semanticdbVersion := scalafixSemanticdb.revision,
       autoAPIMappings   := true,
-      dbVersion := TzdbPlugin.Version("2024a")
+      dbVersion         := TzdbPlugin.Version("2024a")
     )
     .settings( // Launch VSCode when you type `code` in the sbt terminal
       code := {

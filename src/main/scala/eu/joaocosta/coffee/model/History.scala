@@ -1,8 +1,12 @@
 package eu.joaocosta.coffee.model
 
 import java.time.Instant
+import io.circe.Codec
 
-final case class History(currentCheckInTime: Instant = Instant.now(), checkIns: List[CheckIn] = Nil):
+final case class History(
+    currentCheckInTime: Instant = Instant.now(),
+    checkIns: List[CheckIn] = Nil
+) derives Codec:
   def caffeineAt(time: Instant, settings: Settings): Double =
     checkIns.iterator.map(_.caffeineAt(time, settings)).sum
 

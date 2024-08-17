@@ -3,11 +3,11 @@ package eu.joaocosta.coffee.components
 import eu.joaocosta.coffee.model.*
 import tyrian.*
 import tyrian.Html.*
-import scala.concurrent.duration._
 
 object SettingsModal extends Modal[Settings]:
 
-  val init: Model = Model(false, Settings(), Settings())
+  val localStorageKey = "settings"
+  val defaultValue = Settings()
 
   def view(model: Model): Html[Msg] =
     Material.dialog(
@@ -19,12 +19,12 @@ object SettingsModal extends Modal[Settings]:
         Material.textField(
           `type` := "number",
           label  := "Caffeine half-life (hours)",
-          value  := model.scratch.caffeineHalfLife.toHours.toString,
+          value  := model.scratch.caffeineHalfLifeHours.toString,
           onInput(
             _.toIntOption
               .map(value =>
                 Msg.UpdateScratch(
-                  _.copy(caffeineHalfLife = value.hours)
+                  _.copy(caffeineHalfLifeHours = value)
                 )
               )
               .getOrElse(Msg.NoOp)
@@ -33,12 +33,12 @@ object SettingsModal extends Modal[Settings]:
         Material.textField(
           `type` := "number",
           label  := "Caffeine ingestion (minutes)",
-          value  := model.scratch.caffeineIngestion.toMinutes.toString,
+          value  := model.scratch.caffeineIngestionMinutes.toString,
           onInput(
             _.toIntOption
               .map(value =>
                 Msg.UpdateScratch(
-                  _.copy(caffeineIngestion = value.minutes)
+                  _.copy(caffeineIngestionMinutes = value)
                 )
               )
               .getOrElse(Msg.NoOp)
@@ -73,6 +73,11 @@ object SettingsModal extends Modal[Settings]:
           )
         )()
       ),
+      Material.button(
+        attribute("slot", "action"),
+        attribute("variant", "text"),
+        onClick(Msg.UpdateScratch(_ => Settings()))
+      )("Restore defaults"),
       Material.button(
         attribute("slot", "action"),
         attribute("variant", "text"),

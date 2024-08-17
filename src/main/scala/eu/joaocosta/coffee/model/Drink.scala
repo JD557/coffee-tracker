@@ -1,5 +1,7 @@
 package eu.joaocosta.coffee.model
 
+import io.circe.Codec
+
 /** Drink description
   *
   * @param name
@@ -13,7 +15,7 @@ final case class Drink(
     name: String,
     caffeinePerMl: Double,
     commonSizes: List[(String, Double)]
-)
+) derives Codec
 
 object Drink:
   val defaults: List[Drink] =

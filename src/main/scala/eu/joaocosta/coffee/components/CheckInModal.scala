@@ -11,7 +11,8 @@ object CheckInModal extends Modal[History]:
   private val dateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-  val init: Model = Model(false, History(), History())
+  val localStorageKey = "history"
+  val defaultValue = History()
 
   def renderDrink(drink: Drink, checkInInstant: Instant): Html[Msg] =
     Material.dropdown()(
