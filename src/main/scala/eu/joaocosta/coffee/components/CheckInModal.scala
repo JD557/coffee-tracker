@@ -3,9 +3,7 @@ package eu.joaocosta.coffee.components
 import eu.joaocosta.coffee.model.*
 import tyrian.*
 import tyrian.Html.*
-import java.time.ZonedDateTime
-import java.time.ZoneId
-import java.time.Instant
+import java.time.*
 import java.time.format.DateTimeFormatter
 
 object CheckInModal extends Modal[History]:
@@ -29,7 +27,7 @@ object CheckInModal extends Modal[History]:
                 _.addCheckIn(
                   CheckIn(
                     drink,
-                    ZonedDateTime.ofInstant(checkInInstant, ZoneId.of("UTC")),
+                    OffsetDateTime.ofInstant(checkInInstant, ZoneId.systemDefault()),
                     volume
                   )
                 )
@@ -50,10 +48,10 @@ object CheckInModal extends Modal[History]:
         `type` := "datetime-local",
         label  := "Check in date",
         value := dateTimeFormatter
-          .withZone(ZoneId.of("UTC"))
+          .withZone(ZoneId.systemDefault())
           .format(model.scratch.currentCheckInTime),
         onInput(str =>
-          scala.util.Try(dateTimeFormatter.withZone(ZoneId.of("UTC")).parse(str))
+          scala.util.Try(dateTimeFormatter.withZone(ZoneId.systemDefault()).parse(str))
             .map(value =>
               Msg.UpdateScratch(
                 _.copy(currentCheckInTime = Instant.from(value))

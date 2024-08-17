@@ -4,7 +4,7 @@ import java.time.*
 
 final case class CheckIn(
     drink: Drink,
-    dateTime: ZonedDateTime,
+    dateTime: OffsetDateTime,
     quantity: Double
 ):
   def totalCaffeine: Double = drink.caffeinePerMl * quantity

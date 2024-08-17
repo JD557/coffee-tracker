@@ -10,24 +10,26 @@ ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports"
 lazy val coffeetracker =
   (project in file("."))
     .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(TzdbPlugin)
     .settings( // Normal settings
       name         := "coffeetracker",
       version      := "0.0.1",
       scalaVersion := "3.4.1",
       organization := "eu.joaocosta",
       libraryDependencies ++= Seq(
-        "io.indigoengine"   %%% "tyrian-io"          % "0.11.0",
-        "io.github.cquiroz" %%% "scala-java-time"    % "2.6.0",
-        "io.github.cquiroz" %%% "scala-java-locales" % "1.5.4",
-        "eu.joaocosta"      %%% "minart"             % "0.6.1-SNAPSHOT",
-        "org.scalameta"     %%% "munit"              % "0.7.29" % Test
+        "eu.joaocosta"       %%% "minart"                 % "0.6.1-SNAPSHOT",
+        "io.github.cquiroz"  %%% "scala-java-locales"     % "1.5.4",
+        "io.github.cquiroz"  %%% "scala-java-time"        % "2.6.0",
+        "io.indigoengine"    %%% "tyrian-io"              % "0.11.0",
+        "org.scalameta"      %%% "munit"                  % "0.7.29" % Test
       ),
       testFrameworks += new TestFramework("munit.Framework"),
       scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
       scalafixOnCompile := true,
       semanticdbEnabled := true,
       semanticdbVersion := scalafixSemanticdb.revision,
-      autoAPIMappings   := true
+      autoAPIMappings   := true,
+      dbVersion := TzdbPlugin.Version("2024a")
     )
     .settings( // Launch VSCode when you type `code` in the sbt terminal
       code := {
