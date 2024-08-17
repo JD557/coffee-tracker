@@ -52,7 +52,9 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
         div(style(Style("flex-grow" -> "1")))(),
         Material.buttonIcon(
           attribute("icon", "settings"),
-          onClick(Msg.ModifySettingsModal(SettingsModal.Msg.Open))
+          onClick(
+            Msg.ModifySettingsModal(SettingsModal.Msg.Open(model.settings.data))
+          )
         )()
       ),
       Material.layoutMain()(
@@ -67,7 +69,11 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
       ),
       Material.fab(
         attribute("icon", "add"),
-        onClick(Msg.ModifyCheckInModal(CheckInModal.Msg.Open)),
+        onClick(
+          Msg.ModifyCheckInModal(
+            CheckInModal.Msg.Open(model.checkIns.data.withNewCheckIn())
+          )
+        ),
         style(
           Style(
             "position" -> "fixed",

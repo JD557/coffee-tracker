@@ -14,8 +14,8 @@ trait Modal[T]:
 
   def update(msg: Msg, model: Model): Model =
     msg match
-      case Msg.Open =>
-        model.drop.openModal
+      case Msg.Open(scratch) =>
+        model.copy(scratch = scratch).openModal
       case Msg.Close =>
         model.drop.closeModal
       case Msg.Save =>
@@ -30,7 +30,7 @@ trait Modal[T]:
   def view(model: Model): Html[Msg]
 
   enum Msg:
-    case Open
+    case Open(scratch: T)
     case Close
     case Save
     case UpdateAndSave(f: T => T)

@@ -3,14 +3,19 @@ package eu.joaocosta.coffee.components
 import eu.joaocosta.coffee.model.*
 import tyrian.*
 import tyrian.Html.*
+import java.time.format.DateTimeFormatter
 
 object CheckInHistory:
+
+  private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
   def renderCheckIn(checkIn: CheckIn): Html[Msg] =
     Material.listItem(
-      attribute("description", checkIn.dateTime.toLocalTime().toString)
+      attribute("description", timeFormatter.format(checkIn.dateTime))
     )(
       span()(
-        s"${checkIn.drink.name} (${checkIn.quantity}mL / ${checkIn.totalCaffeine.toString}mg)"
+        f"${checkIn.drink.name} (${checkIn.quantity}%1.1f mL / ${checkIn.totalCaffeine}%1.1f mg)"
       ),
       Material.buttonIcon(
         attribute("variant", "tonal"),
@@ -30,7 +35,7 @@ object CheckInHistory:
           .map((localDate, checkIns) =>
             Material.card()(
               div(style(Style("padding" -> "1rem")))(
-                h3(localDate.toString),
+                h3(dateFormatter.format(localDate)),
                 Material.list()(checkIns.map(renderCheckIn))
               )
             )
