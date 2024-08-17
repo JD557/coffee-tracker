@@ -1,12 +1,9 @@
 package eu.joaocosta.coffee.model
 
+import eu.joaocosta.coffee.components.*
+
 enum Msg:
-  case AddCheckIn(checkIn: CheckIn)
   case RemoveCheckIn(checkIn: CheckIn)
-  case OpenCheckInModal
-  case CloseCheckInModal
-  case OpenSettingsModal
-  case CloseSettingsModal
-  case SaveSettings
-  case UpdateSettingsScratch(settings: Settings)
+  case ModifyCheckInModal(msg: CheckInModal.Msg)
+  case ModifySettingsModal(msg: SettingsModal.Msg)
   case NoOp

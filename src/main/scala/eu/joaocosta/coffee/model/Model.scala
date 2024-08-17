@@ -1,9 +1,9 @@
 package eu.joaocosta.coffee.model
 
+import eu.joaocosta.coffee.components.*
+
 final case class Model(
-    history: History = History(),
-    settings: Settings = Settings(),
-    settingsScratch: Settings = Settings(),
+    checkIns: CheckInModal.Model = CheckInModal.init,
+    settings: SettingsModal.Model = SettingsModal.init,
     checkInModal: Boolean = false,
-    settingsModal: Boolean = false
 )

@@ -6,7 +6,10 @@ import tyrian.Html.*
 import java.time.ZonedDateTime
 import java.time.ZoneId
 
-object CheckInModal:
+object CheckInModal extends Modal[History]:
+
+  val init: Model = Model(false, History(), History())
+
   def renderDrink(drink: Drink): Html[Msg] =
     Material.dropdown()(
       Material.listItem(
@@ -17,8 +20,10 @@ object CheckInModal:
         drink.commonSizes.map((size, volume) =>
           Material.menuItem(
             onClick(
-              Msg.AddCheckIn(
-                CheckIn(drink, ZonedDateTime.now(ZoneId.of("UTC")), volume)
+              Msg.UpdateAndSave(
+                _.addCheckIn(
+                  CheckIn(drink, ZonedDateTime.now(ZoneId.of("UTC")), volume)
+                )
               )
             )
           )(size)
@@ -26,14 +31,11 @@ object CheckInModal:
       )
     )
 
-  val renderDrinks: Html[Msg] =
-    Material.list()(Drink.defaults.map(renderDrink)*)
-
-  def render(open: Boolean): Html[Msg] =
+  def view(model: Model): Html[Msg] =
     Material.dialog(
-      attribute("open", open.toString),
+      attribute("open", model.open.toString),
       attribute("headline", "Add Drink"),
-      onEvent("overlay-click", _ => Msg.CloseCheckInModal)
+      onEvent("overlay-click", _ => Msg.Close)
     )(
-      renderDrinks
+      Material.list()(Drink.defaults.map(renderDrink)*)
     )

@@ -19,31 +19,31 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
     (Model(), Cmd.None)
 
   def update(model: Model): Msg => (Model, Cmd[IO, Msg]) =
-    case Msg.AddCheckIn(checkIn) =>
+    case Msg.RemoveCheckIn(checkIn) =>
       (
-        model.copy(
-          history = model.history.addCheckIn(checkIn),
-          checkInModal = false
+        model.copy(checkIns =
+          model.checkIns.drop.update(_.removeCheckIn(checkIn)).commit
         ),
         Cmd.None
       )
-    case Msg.RemoveCheckIn(checkIn) =>
-      (model.copy(history = model.history.removeCheckIn(checkIn)), Cmd.None)
-    case Msg.OpenCheckInModal =>
-      (model.copy(checkInModal = true, settingsModal = false), Cmd.None)
-    case Msg.CloseCheckInModal =>
-      (model.copy(checkInModal = false), Cmd.None)
-    case Msg.OpenSettingsModal =>
-      (model.copy(settingsScratch = model.settings, settingsModal = true, checkInModal = false), Cmd.None)
-    case Msg.CloseSettingsModal =>
-      (model.copy(settingsScratch = model.settings, settingsModal = false), Cmd.None)
-    case Msg.SaveSettings =>
-      (model.copy(settings = model.settingsScratch, settingsModal = false), Cmd.None)
-    case Msg.UpdateSettingsScratch(settings) =>
-      (model.copy(settingsScratch = settings), Cmd.None)
+    case Msg.ModifyCheckInModal(msg) =>
+      (
+        model.copy(
+          settings = model.settings.closeModal,
+          checkIns = CheckInModal.update(msg, model.checkIns)
+        ),
+        Cmd.None
+      )
+    case Msg.ModifySettingsModal(msg) =>
+      (
+        model.copy(
+          settings = SettingsModal.update(msg, model.settings),
+          checkIns = model.checkIns.closeModal
+        ),
+        Cmd.None
+      )
     case Msg.NoOp =>
       (model, Cmd.None)
-
 
   def view(model: Model): Html[Msg] =
     Material.layout()(
@@ -52,18 +52,22 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
         div(style(Style("flex-grow" -> "1")))(),
         Material.buttonIcon(
           attribute("icon", "settings"),
-          onClick(Msg.OpenSettingsModal)
+          onClick(Msg.ModifySettingsModal(SettingsModal.Msg.Open))
         )()
       ),
       Material.layoutMain()(
-        StatsCard.render(model.history, model.settings),
-        CheckInHistory.render(model.history),
-        CheckInModal.render(model.checkInModal),
-        SettingsModal.render(model.settingsModal, model.settingsScratch)
+        StatsCard.render(model.checkIns.data, model.settings.data),
+        CheckInHistory.render(model.checkIns.data),
+        CheckInModal
+          .view(model.checkIns)
+          .map(msg => Msg.ModifyCheckInModal(msg)),
+        SettingsModal
+          .view(model.settings)
+          .map(msg => Msg.ModifySettingsModal(msg))
       ),
       Material.fab(
         attribute("icon", "add"),
-        onClick(Msg.OpenCheckInModal),
+        onClick(Msg.ModifyCheckInModal(CheckInModal.Msg.Open)),
         style(
           Style(
             "position" -> "fixed",
@@ -76,4 +80,3 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
 
   def subscriptions(model: Model): Sub[IO, Msg] =
     Sub.None
-
