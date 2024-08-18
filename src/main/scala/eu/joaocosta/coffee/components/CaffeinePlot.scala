@@ -3,42 +3,55 @@ package eu.joaocosta.coffee.components
 import eu.joaocosta.coffee.model.*
 import eu.joaocosta.minart.backend.ImageDataSurface
 import eu.joaocosta.minart.graphics.*
-import java.time.Instant
+import java.time.*
 import org.scalajs.dom
 
 object CaffeinePlot:
-  private val backgroundColor = Color(0, 0, 0)
-  private val plotColor = Color(255, 255, 0)
-  private val nowColor = Color(255, 255, 255)
-  private val minColor = Color(128, 128, 128)
-  private val maxColor = Color(255, 128, 128)
+  private val backgroundColor = Color(30, 25, 27)
+  private val plotColor = Color(180, 170, 20)
+  private val nowColor = Color(200, 195, 190)
+  private val hourColor = Color(70, 80, 120)
+  private val minColor = Color(110, 128, 120)
+  private val maxColor = Color(205, 130, 120)
   private val thickness = 1
 
-  def getImage(history: History, settings: Settings, imageWidth: Int, imageHeight: Int): dom.Image =
+  def getImage(history: History, settings: Settings, imageWidth: Int, imageHeight: Int, now: Instant): dom.Image =
     val baseSurface = ImageDataSurface.fromImage(new dom.Image(imageWidth, imageHeight))
     baseSurface.fill(backgroundColor)
-    val now = Instant.now().getEpochSecond()
-    val start = now - (12 * 60 * 60)
+    val nowSecond = now.getEpochSecond()
+    val start = nowSecond - (12 * 60 * 60)
     val maxRange = 2 * settings.maxCaffeine
+    val secondsPerPixel = (24 * 60 * 60).toDouble / imageWidth
 
     // Draw plot
-    (0 until imageWidth).foreach { pixelX =>
-      val delta = ((24 * 60 * 60) * pixelX) / imageWidth
+    (0 until imageWidth).foreach(pixelX =>
+      val delta = (secondsPerPixel * pixelX).toInt
       val caffeine = history.caffeineAt(Instant.ofEpochSecond(start + delta), settings)
       val pixelY = (imageHeight - 1) - (imageHeight * caffeine / maxRange).toInt
       (-thickness to thickness).foreach(dy => baseSurface.putPixel(pixelX, pixelY + dy, plotColor))
       (-thickness to thickness).foreach(dx => baseSurface.putPixel(pixelX + dx, pixelY, plotColor))
-    }
+      )
 
-    // Draw lines
+    // Draw limit lines
     val minY = (imageHeight - 1) - (imageHeight * settings.minCaffeine / maxRange).toInt
     val maxY = (imageHeight - 1) - (imageHeight * settings.maxCaffeine / maxRange).toInt
-    (0 until imageWidth).foreach { pixelX =>
+    (0 until imageWidth).foreach(pixelX =>
       baseSurface.putPixel(pixelX, minY, minColor)
       baseSurface.putPixel(pixelX, maxY, maxColor)
-    }
-    (0 until imageHeight).foreach { pixelY =>
+      )
+
+    // Draw time lines
+    val extraMinutes = LocalDateTime.ofInstant(now, ZoneId.systemDefault()).getMinute
+    val pixelsPerMinute = 60 / secondsPerPixel
+    val pixelsPerHour = 60 * pixelsPerMinute
+    val delta = pixelsPerMinute * extraMinutes
+    (0 until imageHeight).foreach(pixelY =>
+      if (pixelY % 10 < 5)
+        (1 until 25).foreach(hour =>
+          val pixelX = (pixelsPerHour * hour - delta).toInt
+          baseSurface.putPixel(pixelX, pixelY, hourColor)
+        )
       baseSurface.putPixel(imageWidth / 2, pixelY, nowColor)
-    }
+    )
 
     baseSurface.toImage()

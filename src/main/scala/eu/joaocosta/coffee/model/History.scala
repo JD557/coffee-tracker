@@ -2,6 +2,7 @@ package eu.joaocosta.coffee.model
 
 import java.time.Instant
 import io.circe.Codec
+import java.time.LocalDate
 
 final case class History(
     currentCheckInTime: Instant = Instant.now(),
@@ -9,6 +10,9 @@ final case class History(
 ) derives Codec:
   def caffeineAt(time: Instant, settings: Settings): Double =
     checkIns.iterator.map(_.caffeineAt(time, settings)).sum
+
+  def dailyCaffeine(day: LocalDate): Double =
+    checkIns.filter(_.dateTime.toLocalDate == day).map(_.totalCaffeine).sum
 
   def addCheckIn(checkIn: CheckIn): History =
     copy(checkIns = (checkIn :: checkIns).sortBy(_.dateTime))

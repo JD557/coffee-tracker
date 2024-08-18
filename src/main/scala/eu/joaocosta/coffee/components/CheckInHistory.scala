@@ -14,6 +14,7 @@ object CheckInHistory:
     Material.collapseItem()(
       Material.listItem(
         attribute("slot", "header"),
+        attribute("icon", "coffee"),
         attribute("end-icon", "edit"),
         attribute("description", timeFormatter.format(checkIn.dateTime))
       )(
@@ -50,8 +51,9 @@ object CheckInHistory:
           .groupBy(_.dateTime.toLocalDate())
           .toList
           .sortBy(_._1)
+          .reverse
           .map((localDate, checkIns) =>
-            Material.card(style(Style("width" -> "100%")))(
+            Material.card(style(Style("width" -> "100%", "max-width" -> "1024px")))(
               div(style(Style("padding" -> "1rem")))(
                 h3(style(Material.Styles.titleMedium))(dateFormatter.format(localDate)),
                 Material.list()(
