@@ -15,7 +15,8 @@ object SettingsModal extends Modal[Settings]:
       attribute("headline", "Settings"),
       onEvent("overlay-click", _ => Msg.Close)
     )(
-      form(id := "settings")(
+      Material.list(id := "settings")(
+        Material.listItem(attribute("nonclickable", "true"))(
         Material.textField(
           `type` := "number",
           label  := "Caffeine half-life (hours)",
@@ -29,7 +30,8 @@ object SettingsModal extends Modal[Settings]:
               )
               .getOrElse(Msg.NoOp)
           )
-        )(),
+        )()),
+        Material.listItem(attribute("nonclickable", "true"))(
         Material.textField(
           `type` := "number",
           label  := "Caffeine ingestion (minutes)",
@@ -43,7 +45,8 @@ object SettingsModal extends Modal[Settings]:
               )
               .getOrElse(Msg.NoOp)
           )
-        )(),
+        )()),
+        Material.listItem(attribute("nonclickable", "true"))(
         Material.textField(
           `type` := "number",
           label  := "Max caffeine before sleep (mg)",
@@ -57,7 +60,8 @@ object SettingsModal extends Modal[Settings]:
               )
               .getOrElse(Msg.NoOp)
           )
-        )(),
+        )()),
+        Material.listItem(attribute("nonclickable", "true"))(
         Material.textField(
           `type` := "number",
           label  := "Max caffeine (mg)",
@@ -71,7 +75,7 @@ object SettingsModal extends Modal[Settings]:
               )
               .getOrElse(Msg.NoOp)
           )
-        )()
+        )())
       ),
       Material.button(
         attribute("slot", "action"),

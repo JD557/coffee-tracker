@@ -27,6 +27,7 @@ object Material:
   val topAppBar  = TagBuilder("mdui-top-app-bar")
   def topAppBarTitle[M](attributes: Attr[M]*)(text: String) =
     raw[M]("mdui-top-app-bar-title", attributes.toList)(text)
+  val bottomAppBar  = TagBuilder("mdui-bottom-app-bar")
 
   val dialog = TagBuilder("mdui-dialog")
 
@@ -38,4 +39,11 @@ object Material:
       "font-size" -> "var(--mdui-typescale-title-large-size)",
       "letter-spacing" -> "var(--mdui-typescale-title-large-tracking)",
       "font-weight" -> "var(--mdui-typescale-title-large-weight)"
+    )
+
+    val titleMedium: Style = Style(
+      "line-height" -> "var(--mdui-typescale-title-medium-line-height)",
+      "font-size" -> "var(--mdui-typescale-title-medium-size)",
+      "letter-spacing" -> "var(--mdui-typescale-title-medium-tracking)",
+      "font-weight" -> "var(--mdui-typescale-title-medium-weight)"
     )

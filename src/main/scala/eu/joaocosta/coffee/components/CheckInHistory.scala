@@ -44,16 +44,16 @@ object CheckInHistory:
     )
 
   def render(history: History): Html[Msg] =
-    div(style(Style("padding-bottom" -> "4em")))(
+    div()(
       h2(style(Material.Styles.titleLarge))("History") ::
         history.checkIns
           .groupBy(_.dateTime.toLocalDate())
           .toList
           .sortBy(_._1)
           .map((localDate, checkIns) =>
-            Material.card()(
+            Material.card(style(Style("width" -> "100%")))(
               div(style(Style("padding" -> "1rem")))(
-                h3(dateFormatter.format(localDate)),
+                h3(style(Material.Styles.titleMedium))(dateFormatter.format(localDate)),
                 Material.list()(
                   Material.collapse(attribute("accordion", "true"))(
                     checkIns.map(checkIn => renderCheckIn(checkIn, history))

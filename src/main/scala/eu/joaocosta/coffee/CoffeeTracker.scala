@@ -39,26 +39,30 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
       (model, Cmd.None)
 
   def view(model: Model): Html[Msg] =
-    Material.layout()(
-      Material.topAppBar()(
-        Material.topAppBarTitle()("Coffee Tracker"),
-        div(style(Style("flex-grow" -> "1")))(),
-        Material.buttonIcon(
-          attribute("icon", "settings"),
-          onClick(
-            Msg.ModifySettingsModal(SettingsModal.Msg.Open(model.settings.data))
-          )
-        )()
-      ),
-      Material.layoutMain()(
-        StatsCard.render(model.checkIns.data, model.settings.data),
-        CheckInHistory.render(model.checkIns.data),
-        CheckInModal
-          .view(model.checkIns)
-          .map(msg => Msg.ModifyCheckInModal(msg)),
-        SettingsModal
-          .view(model.settings)
-          .map(msg => Msg.ModifySettingsModal(msg))
+    div(style(Style("padding-bottom" -> "80px")))(
+      Material.layout()(
+        Material.topAppBar()(
+          Material.topAppBarTitle()("Coffee Tracker"),
+          div(style(Style("flex-grow" -> "1")))(),
+          Material.buttonIcon(
+            attribute("icon", "settings"),
+            onClick(
+              Msg.ModifySettingsModal(
+                SettingsModal.Msg.Open(model.settings.data)
+              )
+            )
+          )()
+        ),
+        Material.layoutMain()(
+          StatsCard.render(model.checkIns.data, model.settings.data),
+          CheckInHistory.render(model.checkIns.data),
+          CheckInModal
+            .view(model.checkIns)
+            .map(msg => Msg.ModifyCheckInModal(msg)),
+          SettingsModal
+            .view(model.settings)
+            .map(msg => Msg.ModifySettingsModal(msg))
+        )
       ),
       Material.fab(
         attribute("icon", "add"),
