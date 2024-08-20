@@ -12,8 +12,11 @@ final case class CheckIn(
 
   def caffeineAt(time: Instant, settings: Settings): Double =
     val t = (time.getEpochSecond() - dateTime.toEpochSecond()).toDouble
-    if (t <= 0 || t >= 24 * 60 * 60) 0.0
+    if (t < 0 || t >= 24 * 60 * 60) 0.0
     else
+      val ingestion =
+        if (settings.caffeineIngestion.toSeconds == 0) 1.0
+        else math.min(t / settings.caffeineIngestion.toSeconds, 1.0)
       val absorbedCaffeine =
-        math.min(t / settings.caffeineIngestion.toSeconds, 1.0) * totalCaffeine
+        ingestion * totalCaffeine
       absorbedCaffeine * math.pow(2.0, -t / settings.caffeineHalfLife.toSeconds)
