@@ -17,7 +17,7 @@ lazy val coffeetracker =
       scalaVersion := "3.4.1",
       organization := "eu.joaocosta",
       libraryDependencies ++= Seq(
-        "eu.joaocosta"      %%% "minart"             % "0.6.1-SNAPSHOT",
+        "eu.joaocosta"      %%% "minart"             % "0.6.1",
         "io.github.cquiroz" %%% "scala-java-locales" % "1.5.4",
         "io.github.cquiroz" %%% "scala-java-time"    % "2.6.0",
         "io.indigoengine"   %%% "tyrian-io"          % "0.11.0",
