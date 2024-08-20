@@ -1,15 +1,28 @@
 package eu.joaocosta.coffee.components
 
-import eu.joaocosta.coffee.model.*
-import tyrian.*
-import tyrian.Html.*
 import java.time.format.DateTimeFormatter
 
+import tyrian.Html.*
+import tyrian.*
+
+import eu.joaocosta.coffee.model.*
+
+/** Component that renders the check in history.
+  */
 object CheckInHistory:
 
   private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
   private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
+  /** Renders a single check in.
+    *
+    * @param checkIn
+    *   check in to render
+    * @param history
+    *   history with all check ins
+    * @return
+    *   HTML element representing the check in
+    */
   def renderCheckIn(checkIn: CheckIn, history: History): Html[Msg] =
     Material.collapseItem()(
       Material.listItem(
@@ -44,7 +57,14 @@ object CheckInHistory:
       )
     )
 
-  def render(history: History): Html[Msg] =
+  /** Renders a check in history.
+    *
+    * @param history
+    *   check in history
+    * @return
+    *   HTML element to render
+    */
+  def view(history: History): Html[Msg] =
     div()(
       h2(style(Material.Styles.titleLarge))("History") ::
         history.checkIns
@@ -53,15 +73,18 @@ object CheckInHistory:
           .sortBy(_._1)
           .reverse
           .map((localDate, checkIns) =>
-            Material.card(style(Style("width" -> "100%", "max-width" -> "1024px")))(
-              div(style(Style("padding" -> "1rem")))(
-                h3(style(Material.Styles.titleMedium))(dateFormatter.format(localDate)),
-                Material.list()(
-                  Material.collapse(attribute("accordion", "true"))(
-                    checkIns.map(checkIn => renderCheckIn(checkIn, history))
+            Material
+              .card(style(Style("width" -> "100%", "max-width" -> "1024px")))(
+                div(style(Style("padding" -> "1rem")))(
+                  h3(style(Material.Styles.titleMedium))(
+                    dateFormatter.format(localDate)
+                  ),
+                  Material.list()(
+                    Material.collapse(attribute("accordion", "true"))(
+                      checkIns.map(checkIn => renderCheckIn(checkIn, history))
+                    )
                   )
                 )
               )
-            )
           )
     )

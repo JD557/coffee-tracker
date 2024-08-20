@@ -1,19 +1,32 @@
 package eu.joaocosta.coffee.components
 
-import eu.joaocosta.coffee.model.*
-import tyrian.*
-import tyrian.Html.*
 import java.time.*
 import java.time.format.DateTimeFormatter
 
+import tyrian.Html.*
+import tyrian.*
+
+import eu.joaocosta.coffee.model.*
+
+/** Modal to add a new check in
+  */
 object CheckInModal extends Modal[History]:
 
   private val dateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
   val localStorageKey = "history"
-  val defaultValue = History()
+  val defaultValue    = History()
 
+  /** Renders a single drink, with the option to check in the drink.
+    *
+    * @param drink
+    *   drink to render
+    * @param checkInInstant
+    *   instant of the check in to create
+    * @return
+    *   HTML element of the drink
+    */
   def renderDrink(drink: Drink, checkInInstant: Instant): Html[Msg] =
     Material.dropdown()(
       Material.listItem(
@@ -28,7 +41,8 @@ object CheckInModal extends Modal[History]:
                 _.addCheckIn(
                   CheckIn(
                     drink,
-                    OffsetDateTime.ofInstant(checkInInstant, ZoneId.systemDefault()),
+                    OffsetDateTime
+                      .ofInstant(checkInInstant, ZoneId.systemDefault()),
                     volume
                   )
                 )
@@ -52,7 +66,8 @@ object CheckInModal extends Modal[History]:
           .withZone(ZoneId.systemDefault())
           .format(model.scratch.currentCheckInTime),
         onInput(str =>
-          scala.util.Try(dateTimeFormatter.withZone(ZoneId.systemDefault()).parse(str))
+          scala.util
+            .Try(dateTimeFormatter.withZone(ZoneId.systemDefault()).parse(str))
             .map(value =>
               Msg.UpdateScratch(
                 _.copy(currentCheckInTime = Instant.from(value))

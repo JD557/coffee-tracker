@@ -1,9 +1,15 @@
 package eu.joaocosta.coffee.components
 
 import scala.annotation.targetName
-import tyrian.*
-import tyrian.Html.*
 
+import tyrian.Html.*
+import tyrian.*
+
+/** Helper methods to build Tyrian HTML tags.
+  *
+  * @param name
+  *   tag name
+  */
 case class TagBuilder(name: String):
   def apply[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M] =
     Tag(name, attributes.toList, children.toList)

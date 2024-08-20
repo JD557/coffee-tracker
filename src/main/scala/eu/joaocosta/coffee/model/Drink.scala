@@ -9,7 +9,7 @@ import io.circe.Codec
   * @param caffeinePerMl
   *   milligrams of caffeine per mL
   * @param commonSizes
-  *   common sizes (in ml)
+  *   common sizes (in mL)
   */
 final case class Drink(
     name: String,
@@ -18,6 +18,8 @@ final case class Drink(
 ) derives Codec
 
 object Drink:
+  /** Default list of drinks.
+    */
   val defaults: List[Drink] =
     List(
       Drink("Espresso", 64.0 / 30.0, List("Single" -> 30, "Double" -> 60)),

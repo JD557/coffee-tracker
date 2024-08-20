@@ -1,12 +1,26 @@
 package eu.joaocosta.coffee.components
 
-import eu.joaocosta.coffee.model.*
-import tyrian.*
-import tyrian.Html.*
 import java.time.*
 
+import tyrian.Html.*
+import tyrian.*
+
+import eu.joaocosta.coffee.model.*
+
+/** Component to render the current stats, such as the caffeine consumed in a
+  * day and the caffeine plot.
+  */
 object StatsCard:
-  def render(history: History, settings: Settings): Html[Msg] =
+  /** Renders a stats card.
+    *
+    * @param history
+    *   check in history
+    * @param settings
+    *   caffeine levels computation settings
+    * @return
+    *   HTML element to render
+    */
+  def view(history: History, settings: Settings): Html[Msg] =
     val now   = Instant.now()
     val today = LocalDateTime.ofInstant(now, ZoneId.systemDefault()).toLocalDate
     val plot  = CaffeinePlot.getImage(history, settings, 1024, 256, now)

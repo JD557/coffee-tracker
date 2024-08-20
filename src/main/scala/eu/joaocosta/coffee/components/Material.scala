@@ -3,6 +3,8 @@ package eu.joaocosta.coffee.components
 import tyrian.Html.*
 import tyrian.*
 
+/** Bindings to Material design elements, using MDUI.
+  */
 object Material:
   def button[M](attributes: Attr[M]*)(text: String) =
     raw[M]("mdui-button", attributes.toList)(text)
@@ -17,7 +19,7 @@ object Material:
   val list     = TagBuilder("mdui-list")
   val listItem = TagBuilder("mdui-list-item")
 
-  val collapse = TagBuilder("mdui-collapse")
+  val collapse     = TagBuilder("mdui-collapse")
   val collapseItem = TagBuilder("mdui-collapse-item")
 
   val card = TagBuilder("mdui-card")
@@ -27,7 +29,7 @@ object Material:
   val topAppBar  = TagBuilder("mdui-top-app-bar")
   def topAppBarTitle[M](attributes: Attr[M]*)(text: String) =
     raw[M]("mdui-top-app-bar-title", attributes.toList)(text)
-  val bottomAppBar  = TagBuilder("mdui-bottom-app-bar")
+  val bottomAppBar = TagBuilder("mdui-bottom-app-bar")
 
   val dialog = TagBuilder("mdui-dialog")
 
@@ -35,15 +37,15 @@ object Material:
 
   object Styles:
     val titleLarge: Style = Style(
-      "line-height" -> "var(--mdui-typescale-title-large-line-height)",
-      "font-size" -> "var(--mdui-typescale-title-large-size)",
+      "line-height"    -> "var(--mdui-typescale-title-large-line-height)",
+      "font-size"      -> "var(--mdui-typescale-title-large-size)",
       "letter-spacing" -> "var(--mdui-typescale-title-large-tracking)",
-      "font-weight" -> "var(--mdui-typescale-title-large-weight)"
+      "font-weight"    -> "var(--mdui-typescale-title-large-weight)"
     )
 
     val titleMedium: Style = Style(
-      "line-height" -> "var(--mdui-typescale-title-medium-line-height)",
-      "font-size" -> "var(--mdui-typescale-title-medium-size)",
+      "line-height"    -> "var(--mdui-typescale-title-medium-line-height)",
+      "font-size"      -> "var(--mdui-typescale-title-medium-size)",
       "letter-spacing" -> "var(--mdui-typescale-title-medium-tracking)",
-      "font-weight" -> "var(--mdui-typescale-title-medium-weight)"
+      "font-weight"    -> "var(--mdui-typescale-title-medium-weight)"
     )

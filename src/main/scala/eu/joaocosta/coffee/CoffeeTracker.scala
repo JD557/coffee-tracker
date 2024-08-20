@@ -1,13 +1,13 @@
 package eu.joaocosta.coffee
 
+import scala.scalajs.js.annotation.*
+
 import cats.effect.IO
 import tyrian.Html.*
 import tyrian.*
 
-import scala.scalajs.js.annotation.*
-
-import eu.joaocosta.coffee.model.*
 import eu.joaocosta.coffee.components.*
+import eu.joaocosta.coffee.model.*
 
 @JSExportTopLevel("TyrianApp")
 object CoffeeTracker extends TyrianIOApp[Msg, Model]:
@@ -54,8 +54,8 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
           )()
         ),
         Material.layoutMain()(
-          StatsCard.render(model.checkIns.data, model.settings.data),
-          CheckInHistory.render(model.checkIns.data),
+          StatsCard.view(model.checkIns.data, model.settings.data),
+          CheckInHistory.view(model.checkIns.data),
           CheckInModal
             .view(model.checkIns)
             .map(msg => Msg.ModifyCheckInModal(msg)),
