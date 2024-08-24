@@ -44,4 +44,17 @@ class CheckInTests extends munit.FunSuite {
     assert(checkIn.caffeineAt(now.plusHours(2).toInstant(), settings) == 25)
   }
 
+  test("ignore caffeine levels in the past and in the far future") {
+    val now = OffsetDateTime.now()
+    val settings = Settings(
+      caffeineHalfLifeHours = 1,
+      caffeineIngestionMinutes = 120
+    )
+    val drink   = Drink("test", 100000, Nil)
+    val checkIn = CheckIn(drink, now, 1.0)
+
+    assert(checkIn.caffeineAt(now.minusHours(1).toInstant(), settings) == 0)
+    assert(checkIn.caffeineAt(now.plusHours(25).toInstant(), settings) == 0)
+  }
+
 }
