@@ -18,6 +18,10 @@ final case class CheckIn(
     dateTime: OffsetDateTime,
     quantity: Double
 ) derives Codec:
+
+  /** The local date of this check in */
+  def localDate: LocalDate = dateTime.toLocalDate()
+
   /** The total caffeine ingested due to this check-in.
     */
   def totalCaffeine: Double = drink.caffeinePerMl * quantity

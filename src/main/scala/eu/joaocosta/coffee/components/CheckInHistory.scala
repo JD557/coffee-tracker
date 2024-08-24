@@ -31,18 +31,14 @@ object CheckInHistory:
         attribute("end-icon", "edit"),
         attribute("description", timeFormatter.format(checkIn.dateTime))
       )(
-        span()(
-          f"${checkIn.drink.name} (${checkIn.quantity}%1.1f mL / ${checkIn.totalCaffeine}%1.1f mg)"
-        )
+        f"${checkIn.drink.name} (${checkIn.quantity}%1.1f mL / ${checkIn.totalCaffeine}%1.1f mg)"
       ),
       Material.listItem(attribute("nonclickable", "true"))(
         Material.button(
           attribute("variant", "text"),
           onClick(
             Msg.ModifyCheckInModal(
-              CheckInModal.Msg.Open(
-                history.removeCheckIn(checkIn)
-              )
+              CheckInModal.Msg.Open(history.removeCheckIn(checkIn))
             )
           )
         )("Edit"),
@@ -67,11 +63,7 @@ object CheckInHistory:
   def view(history: History): Html[Msg] =
     div()(
       h2(style(Material.Styles.titleLarge))("History") ::
-        history.checkIns
-          .groupBy(_.dateTime.toLocalDate())
-          .toList
-          .sortBy(_._1)
-          .reverse
+        history.checkIns.toList.reverse
           .map((localDate, checkIns) =>
             Material
               .card(style(Style("width" -> "100%", "max-width" -> "1024px")))(
@@ -81,7 +73,9 @@ object CheckInHistory:
                   ),
                   Material.list()(
                     Material.collapse(attribute("accordion", "true"))(
-                      checkIns.map(checkIn => renderCheckIn(checkIn, history))
+                      checkIns.reverse.map(checkIn =>
+                        renderCheckIn(checkIn, history)
+                      )
                     )
                   )
                 )

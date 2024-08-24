@@ -32,7 +32,7 @@ object CheckInModal extends Modal[History]:
       Material.listItem(
         attribute("slot", "trigger"),
         attribute("icon", "add")
-      )(span()(drink.name)),
+      )(drink.name),
       Material.menu()(
         drink.commonSizes.map((size, volume) =>
           Material.menuItem(

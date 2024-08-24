@@ -24,7 +24,7 @@ object StatsCard:
     val now   = Instant.now()
     val today = LocalDateTime.ofInstant(now, ZoneId.systemDefault()).toLocalDate
     val plot  = CaffeinePlot.getImage(history, settings, 1024, 256, now)
-    val weeklyAverage = (0 until 7)
+    val weeklyAverage = (0 until 7).iterator
       .map(delta => today.minusDays(delta))
       .map(history.dailyCaffeine)
       .sum / 7
@@ -41,7 +41,7 @@ object StatsCard:
                 "description",
                 f"${history.caffeineAt(now, settings)}%1.1f mg"
               )
-            )(span(f"Current caffeine")),
+            )("Current caffeine"),
             Material.listItem(
               attribute("nonclickable", "true"),
               attribute("icon", "today"),
@@ -49,12 +49,12 @@ object StatsCard:
                 "description",
                 f"${history.dailyCaffeine(today)}%1.1f mg"
               )
-            )(span(f"Caffeine ingested today")),
+            )("Caffeine ingested today"),
             Material.listItem(
               attribute("nonclickable", "true"),
               attribute("icon", "calendar_view_week"),
               attribute("description", f"${weeklyAverage}%1.1f mg")
-            )(span(f"Average daily caffeiene (7 days)"))
+            )("Average daily caffeiene (7 days)")
           )
         )
       )
