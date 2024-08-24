@@ -9,13 +9,10 @@ import io.circe.*
 
 /** A history of check-ins.
   *
-  * @param currentCheckInTime
-  *   instant for the check in being currently edited
   * @param checkIns
   *   ordered sequence of check ins
   */
 final case class History(
-    currentCheckInTime: Instant = Instant.now(),
     checkIns: SortedMap[LocalDate, List[CheckIn]] = SortedMap.empty
 ) derives Codec:
 
@@ -59,10 +56,6 @@ final case class History(
     copy(checkIns =
       checkIns.updatedWith(checkIn.localDate)(_.map(_.filterNot(_ == checkIn)))
     )
-
-  /** Updates the current check-in time for a new check-in.
-    */
-  def withNewCheckIn(): History = copy(currentCheckInTime = Instant.now())
 
 object History:
   given Codec[SortedMap[LocalDate, List[CheckIn]]] =

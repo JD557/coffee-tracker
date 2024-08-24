@@ -38,7 +38,13 @@ object CheckInHistory:
           attribute("variant", "text"),
           onClick(
             Msg.ModifyCheckInModal(
-              CheckInModal.Msg.Open(history.removeCheckIn(checkIn))
+              CheckInModal.Msg.Open(
+                CheckInModal.DataModel(
+                  checkIn.dateTime.toInstant(),
+                  Some(checkIn.drink),
+                  history.removeCheckIn(checkIn)
+                )
+              )
             )
           )
         )("Edit"),
@@ -46,7 +52,9 @@ object CheckInHistory:
           attribute("variant", "text"),
           onClick(
             Msg.ModifyCheckInModal(
-              CheckInModal.Msg.UpdateAndSave(_.removeCheckIn(checkIn))
+              CheckInModal.Msg.UpdateAndSave(
+                _.updateHistory(_.removeCheckIn(checkIn))
+              )
             )
           )
         )("Remove")

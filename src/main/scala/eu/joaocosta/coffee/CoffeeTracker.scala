@@ -54,8 +54,8 @@ object CoffeeTracker extends TyrianIOApp[Msg, Model]:
           )()
         ),
         Material.layoutMain()(
-          StatsCard.view(model.checkIns.data, model.settings.data),
-          CheckInHistory.view(model.checkIns.data),
+          StatsCard.view(model.checkIns.data.history, model.settings.data),
+          CheckInHistory.view(model.checkIns.data.history),
           CheckInModal
             .view(model.checkIns)
             .map(msg => Msg.ModifyCheckInModal(msg)),
