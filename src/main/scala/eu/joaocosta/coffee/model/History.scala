@@ -7,6 +7,8 @@ import scala.util.Try
 
 import io.circe.*
 
+import eu.joaocosta.coffee.model.History.removeFirst
+
 /** A history of check-ins.
   *
   * @param checkIns
@@ -54,10 +56,19 @@ final case class History(
     */
   def removeCheckIn(checkIn: CheckIn): History =
     copy(checkIns =
-      checkIns.updatedWith(checkIn.localDate)(_.map(_.filterNot(_ == checkIn)))
+      checkIns
+        .updatedWith(checkIn.localDate)(
+          _.map(_.removeFirst(checkIn))
+        )
+        .filter(_._2.nonEmpty)
     )
 
 object History:
+  extension [T](list: List[T])
+    private def removeFirst(target: T): List[T] =
+      val (pt1, pt2) = list.iterator.span(_ != target)
+      (pt1 ++ pt2.drop(1)).toList
+
   given Codec[SortedMap[LocalDate, List[CheckIn]]] =
     val decoder: Decoder[SortedMap[LocalDate, List[CheckIn]]] =
       given KeyDecoder[LocalDate] =
