@@ -2,7 +2,9 @@
   "scripts": {
     "start": "parcel index.html --no-cache --dist-dir dist --log-level info",
     "build": "parcel build index.html --dist-dir dist --log-level info",
-    "android": "cap run android"
+    "android": "cap run android",
+    "android-release": "cap build android",
+    "generate-assets": "capacitor-assets generate --android"
   },
   "dependencies": {
     "mdui": "^2.0.0",
@@ -12,6 +14,7 @@
   "devDependencies": {
     "parcel": "^2.1.0",
     "process": "^0.11.10",
-    "@capacitor/cli": "^6.1.0"
+    "@capacitor/cli": "^6.1.0",
+    "@capacitor/assets": "^3.0.5"
   }
 }
