@@ -1,5 +1,13 @@
 {
   "appId": "eu.joaocosta.coffee",
   "appName": "Coffee Tracker",
-  "webDir": "dist"
+  "webDir": "dist",
+  "android": {
+    "buildOptions": {
+      "keystorePath": "FILL ME",
+      "keystorePassword": "FILL ME",
+      "keystoreAlias": "FILL ME",
+      "keystoreAliasPassword": "FILL ME"
+    }
+  }
 }
