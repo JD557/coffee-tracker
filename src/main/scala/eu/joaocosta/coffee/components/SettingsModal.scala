@@ -87,7 +87,7 @@ object SettingsModal extends Modal[Settings]:
         attribute("slot", "action"),
         attribute("variant", "text"),
         onClick(Msg.UpdateScratch(_ => Settings()))
-      )("Restore defaults"),
+      )("Restore"),
       Material.button(
         attribute("slot", "action"),
         attribute("variant", "text"),
