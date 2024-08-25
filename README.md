@@ -1,5 +1,7 @@
 # Coffee Tracker
 
+A simple caffeine tracker app for Android, built with Scala.js.
+
 ## Setup instructions
 
 To run the program in a browser you will need to have yarn (or npm) installed.
@@ -9,10 +11,7 @@ Before your first run and for your tests to work, **you must** install the node 
 ```sh
 yarn install
 ```
-
-This example uses Parcel.js as our bundler and dev server, there are lots of other options you might prefer like Webpack, scalajs-bunder, or even just vanilla JavaScript.
-
-We recommend you have two terminal tabs open in the directory containing this README file.
+We recommend you have two terminal tabs open:
 
 In the first, we'll run sbt.
 
@@ -20,28 +19,30 @@ In the first, we'll run sbt.
 sbt
 ```
 
-From now on, we can recompile the app with `fastLinkJS` or `fullLinkJS` _**but please note** that the `tyrianapp.js` file in the root is expecting the output from `fastLinkJS`_.
+From now on, we can recompile the app with `fastLinkJS` or `fullLinkJS`.
 
 Run `fastLinkJS` now to get an initial build in place.
 
 Then start your dev server, with:
 
 ```sh
-yarn start
+yarn run start
 ```
 
 Now navigate to [http://localhost:1234/](http://localhost:1234/) to see your site running.
 
-If you leave parcel's dev server running, all you have to do is another `fastLinkJS` or `fullLinkJS` and your app running in the browser should hot-reload the new code.
+If you leave parcel's dev server running, all you have to do is another `fastLinkJS` and your app running in the browser should hot-reload the new code.
 
-## Supported Effect Types
+## Android Build
 
-From version `0.6.0`, Tyrian supports both Cats Effect 3 and ZIO 2.0. This template defaults to CE3 and IO (as this is the author's habit), but there is an example of a [ZIO tyrian project](https://github.com/PurpleKingdomGames/tyrian/blob/main/examples) available, and conversion is fairly straightforward.
+To run an Android build, first setup the Android environment with `npx cap add android` and `npx cap sync`.
 
-The [build](https://github.com/PurpleKingdomGames/tyrian/blob/main/examples/build.sbt#L153) for the ZIO example has libraries that you need to add/replace. You need to set up the right [imports](https://github.com/PurpleKingdomGames/tyrian/blob/main/examples/zio/src/main/scala/example/Main.scala#L6) and replace `IO` with [`Task`](https://github.com/PurpleKingdomGames/tyrian/blob/main/examples/zio/src/main/scala/example/Main.scala#L13).
+Then, after building a dev bundle with `sbt fastLinkJS` and `yarn run start`, connect your Android device via USB and run `yarn run android`.
 
-Otherwise, it's identical.
+To update the icons and splash screen, run `yarn run generate-assets`.
 
-## Supported Build Tools
+## Release
 
-Tyrian works equally well with sbt or Mill. Most of the examples are given in sbt, and this g8 template uses sbt too. However there is a [Mill example](https://github.com/PurpleKingdomGames/tyrian/tree/main/examples/mill) project that serves as a good starting point.
+To create a release build, first fill the missing fields in `capacitor.config.json`.
+
+Then run `sbt fullLinkJS`, `yarn run build` and `yarn run android-release`.
