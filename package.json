@@ -1,20 +1,21 @@
 {
   "scripts": {
-    "start": "parcel index.html --no-cache --dist-dir dist --log-level info",
+    "start": "parcel index.dev.html --no-cache --dist-dir devdist --log-level info",
     "build": "parcel build index.html --dist-dir dist --log-level info",
     "android": "cap run android",
     "android-release": "cap build android",
     "generate-assets": "capacitor-assets generate --android"
   },
   "dependencies": {
-    "mdui": "^2.0.0",
+    "@capacitor/android": "^6.1.0",
     "@capacitor/core": "^6.1.0",
-    "@capacitor/android": "^6.1.0"
+    "mdui": "^2.1.2"
   },
   "devDependencies": {
-    "parcel": "^2.1.0",
-    "process": "^0.11.10",
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^6.1.0",
-    "@capacitor/assets": "^3.0.5"
+    "@parcel/transformer-inline-string": "2.12.0",
+    "parcel": "^2.1.0",
+    "process": "^0.11.10"
   }
 }
