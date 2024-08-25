@@ -73,7 +73,7 @@ trait Modal[T](using Codec[T]):
       case Msg.NoOp =>
         model
 
-  /** Renders the cmodal
+  /** Renders the modal
     *
     * @param model
     *   Modal's model
