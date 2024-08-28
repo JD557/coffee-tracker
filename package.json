@@ -2,8 +2,9 @@
   "scripts": {
     "start": "parcel index.dev.html --no-cache --dist-dir devdist --log-level info",
     "build": "parcel build index.html --dist-dir dist --log-level info",
+    "sync": "cap sync",
     "android": "cap run android",
-    "android-release": "cap build android",
+    "android-studio": "cap open android",
     "generate-assets": "capacitor-assets generate --android"
   },
   "dependencies": {

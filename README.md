@@ -45,4 +45,6 @@ To update the icons and splash screen, run `yarn run generate-assets`.
 
 To create a release build, first fill the missing fields in `capacitor.config.json`.
 
-Then run `sbt fullLinkJS`, `yarn run build` and `yarn run android-release`.
+Then run `sbt fullLinkJS`, `yarn run sync` and open the project in android studio with `yarn run android-studio`.
+
+Finally, on the menu choose "Build > Generate signed App Bundle / APK" and follow the instructions.
