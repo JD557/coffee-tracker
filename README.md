@@ -2,7 +2,9 @@
 
 A simple caffeine tracker app for Android, built with Scala.js.
 
-![Screenshot](screenshot.png)
+<details><summary>Screenshot</summary>
+<img src="screenshot.png"/>
+</details>
 
 ## Setup instructions
 
