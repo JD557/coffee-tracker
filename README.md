@@ -2,6 +2,8 @@
 
 A simple caffeine tracker app for Android, built with Scala.js.
 
+[Blog post](https://blog.joaocosta.eu/articles/8cd240f/writing-an-android-app-with-scalajs)
+
 <details><summary>Screenshot</summary>
 <img src="screenshot.png"/>
 </details>
