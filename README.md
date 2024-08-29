@@ -2,6 +2,8 @@
 
 A simple caffeine tracker app for Android, built with Scala.js.
 
+![Screenshot](screenshot.png)
+
 ## Setup instructions
 
 To run the program in a browser you will need to have yarn (or npm) installed.
